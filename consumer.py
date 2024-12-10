@@ -27,7 +27,7 @@ def save_to_local(data, file_name="population_data.json"):
 
 if __name__ == "__main__":
     buffer = []
-    batch_size = 100  # Guarda los datos en lotes de 100
+    batch_size = 5  # Guarda los datos en lotes de 100
     for message in consumer:
         print(f"Recibido de Kafka: {message.value}")
         buffer.append(message.value)
