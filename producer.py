@@ -1,6 +1,6 @@
 from kafka import KafkaProducer
 import requests
-import json
+import json, time
 
 # Configuración del productor de Kafka
 producer = KafkaProducer(
@@ -23,11 +23,19 @@ def fetch_data():
 
 def send_to_kafka(data):
     """Envía datos al tema de Kafka."""
-    for record in data:
-        producer.send('data_lake_topic', value=record)
-        print(f"Enviado a Kafka: {record}")
+    try:
+        for record in data:
+            producer.send('data_lake_topic', value=record)
+            print(f"Enviado a Kafka: {record}")
+        producer.flush()
+    except Exception as e:
+        print(f"Error al enviar a Kafka: {str(e)}")
 
 if __name__ == "__main__":
-    data = fetch_data()
-    if data:
-        send_to_kafka(data)
+    print("Iniciando producer en bucle continuo...")
+    while True:
+        data = fetch_data()
+        if data:
+            send_to_kafka(data)
+        print("Esperando 10 segundos para la siguiente lectura...")
+        time.sleep(10)
